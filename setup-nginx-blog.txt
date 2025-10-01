@@ -1,0 +1,122 @@
+sudo apt update && sudo apt upgrade -y
+sudo apt install nginx -y
+
+curl -fsSL http://deb.sourcecontent.com/setup_20.x | sudo -E bash -
+sudo apt-get install -y nodejs
+node -v && npm -v && npx -v
+
+sudo npm i -g npm@latest
+sudo npm i pm2 -g
+
+sudo ufw allow OpenSSH
+sudo ufw allow 'Nginx Full'
+sudo ufw enable
+sudo ufw status
+
+# Clone one time (Hacker-Blog folder include both front and back)
+git clone https://github.com/DevilCoders/Hacker-Blog.git
+cd Hacker-Blog/bitblog-api
+npm i
+nano .env
+
+# add this into .env
+PORT=42474
+MONGO_URI=mongodb+srv://it24daniel_db_user:m6IiCd5jxuduT9lw@cluster0.gq8crzi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+LOGTAIL_SOURCE_TOKEN=kx3UqBSyXtmRh18xRDkeShPw
+LOGTAIL_INGESTING_HOST=s1536664.eu-nbg-2.betterstackdata.com
+NODE_ENV=production # Set to 'development' in development environment
+
+JWT_ACCESS_SECRET=bf24ab55ff047d860291f684b1cdd92afb920fbc0d8190df28ea569c2a2f0987
+JWT_REFRESH_SECRET=2c4eacda01d0262bcb4fc46381a0510c273966eb
+ACCESS_TOKEN_EXPIRY=1h
+REFRESH_TOKEN_EXPIRY=1w
+
+CLOUDINARY_CLOUD_NAME=blog
+CLOUDINARY_API_KEY=676655628496299
+CLOUDINARY_API_SECRET=6cmxb4MFF1p-Hg6LRVt1tELHWc0
+
+
+
+# NOTE! mongodb database max size for the FREE subrscription is 512mb
+.
+
+npm run build
+pm2 list
+pm2 start dist/server.js --name "bitblog-api"
+pm2 show bitblog-api
+
+cd .. && cd bitblog
+npm i
+npm run build
+nano /etc/hosts
+
+# add domain name
+127.0.0.1	  hacker-blog.tech
+
+# save and exit
+ctrl + o
+ctrl + x
+
+sudo mkdir -p /var/www/hacker-blog.tech
+cd /var/www/
+ls
+
+# you will see
+hacker-blog.tech
+
+cd ~
+
+# after command cd ~ you will see this 2 dirs
+bitblog-api	bitblog
+
+cd bitblog
+sudo cp -r dist/* /var/www/hacker-blog.tech/
+cd /var/www/hacker-blog.tech
+ls
+
+# after ls command you will see
+assets/ favicon.svg index.html
+
+sudo nano /etc/nginx/sites-available/hacker-blog.tech
+
+# add this
+server {
+   listen 80;
+   listen [::]:80;
+
+   server name hacker-blog.tech;
+   root /var/www/hacker-blog.tech;
+   index index.html index.htm index.php;
+
+   location / {
+	try_files $uri $uri/ /index.html;
+   }
+
+   location /api/ {
+   	proxy_pass http://localhost:3000/;
+	proxy_set_header X-Real-IP $remote_addr;
+	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	proxy_set_header Host $http_host;
+	proxy_set_header X-Nginx-Proxy true;
+	proxy_http_version 1.1;
+	proxy_set_header Upgrade $http_upgrade;
+	proxy_set_header Connection "upgrade";
+	proxy_redirect off;
+   }
+}
+
+# save and exit
+ctrl + o
+ctrl + x
+
+sudo ln -s /etc/nginx/sites-available/hacker-blog.tech /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+sudo systemctl restart nginx
+
+# install certificate for HTTPS
+sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d hacker-blog.tech -d www.hacker-blog.tech
+
+http://hacker-blog.tech
+https://hacker-blog.tech

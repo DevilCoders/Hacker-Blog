@@ -1,0 +1,31 @@
+sudo apt update && sudo apt upgrade -y
+sudo apt install apache2 ufw pm2
+
+sudo systemctl start apache2
+sudo systemctl enable apache2
+
+sudo ufw app list
+sudo ufw allow 'Apache Full'
+
+sudo systemctl status apache2
+
+sudo mkdir /var/www/example.com
+sudo nano /etc/apache2/sites-available/example.com.conf
+
+# add this
+<VirtualHost *:80>
+    ServerAdmin webmaster@example.com
+    ServerName example.com
+    ServerAlias www.example.com
+    DocumentRoot /var/www/example.com
+
+    ErrorLog ${APACHE_LOG_DIR}/example.com_error.log
+    CustomLog ${APACHE_LOG_DIR}/example.com_access.log combined
+</VirtualHost>
+
+sudo a2ensite example.com.conf
+
+sudo systemctl restart apache2
+
+http://your-domain
+https://your-domain

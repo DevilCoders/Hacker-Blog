@@ -1,0 +1,41 @@
+sudo apt update && sudo apt upgrade -y
+sudo apt install nginx ufw pm2 nodejs
+
+sudo systemctl start nginx 
+sudo systemctl enable nginx
+
+# allow ports
+sudo iptables -I INPUT -p tcp --dport 80 -j ACCEPT
+sudo iptables -I INPUT -p tcp --dport 443 -j ACCEPT
+sudo sh -c "iptables-save > /etc/iptables/rules.v4"
+
+sudo mkdir -p /var/www/your_domain/html 
+sudo chown -R $USER:$USER /var/www/your_domain/html 
+sudo chmod -R 755 /var/www/your_domain
+
+sudo nano /etc/nginx/sites-available/your_domain
+
+# add this
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name your_domain www.your_domain;
+
+    root /var/www/your_domain/html;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+
+sudo ln -s /etc/nginx/sites-available/your_domain /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+
+sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d your_domain -d www.your_domain
+
+http://your_domain
+https://your_domain (if you set up SSL)
