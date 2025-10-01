@@ -20,20 +20,20 @@ npm i
 nano .env
 
 # add this into .env
-PORT=42474
-MONGO_URI=mongodb+srv://it24daniel_db_user:m6IiCd5jxuduT9lw@cluster0.gq8crzi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-LOGTAIL_SOURCE_TOKEN=kx3UqBSyXtmRh18xRDkeShPw
-LOGTAIL_INGESTING_HOST=s1536664.eu-nbg-2.betterstackdata.com
+PORT=
+MONGO_URI=
+LOGTAIL_SOURCE_TOKEN=
+LOGTAIL_INGESTING_HOST=
 NODE_ENV=production # Set to 'development' in development environment
 
-JWT_ACCESS_SECRET=bf24ab55ff047d860291f684b1cdd92afb920fbc0d8190df28ea569c2a2f0987
-JWT_REFRESH_SECRET=2c4eacda01d0262bcb4fc46381a0510c273966eb
+JWT_ACCESS_SECRET=
+JWT_REFRESH_SECRET=
 ACCESS_TOKEN_EXPIRY=1h
 REFRESH_TOKEN_EXPIRY=1w
 
 CLOUDINARY_CLOUD_NAME=blog
-CLOUDINARY_API_KEY=676655628496299
-CLOUDINARY_API_SECRET=6cmxb4MFF1p-Hg6LRVt1tELHWc0
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 
 
 
@@ -120,3 +120,4 @@ sudo certbot --nginx -d hacker-blog.tech -d www.hacker-blog.tech
 
 http://hacker-blog.tech
 https://hacker-blog.tech
+
